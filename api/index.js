@@ -1,10 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const serverless = require("serverless-http");
-
 const { userRouter } = require("../routes/userroute");
 const { propertyRouter } = require("../routes/propertyroute");
+const serverless = require("serverless-http"); // IMPORTANT for Vercel
 
 dotenv.config();
 
@@ -14,16 +13,22 @@ app.use(express.json());
 app.use("/user", userRouter);
 app.use("/property", propertyRouter);
 
-app.get("/", (req, res) => {
-  res.send("✅ Backend is working on Vercel!");
-});
+let isConnected = false;
 
-let cachedDb = null;
 async function connectToDatabase() {
-  if (cachedDb) return;
+  if (isConnected) return;
   await mongoose.connect(process.env.MONGO_URI);
-  cachedDb = mongoose.connection;
+  isConnected = true;
+  console.log("Connected to MongoDB");
 }
-connectToDatabase();
 
-module.exports.handler = serverless(app);
+// Vercel requires exporting a handler
+module.exports = async (req, res) => {
+  try {
+    await connectToDatabase();
+    return serverless(app)(req, res);
+  } catch (error) {
+    console.error("Function crash error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
