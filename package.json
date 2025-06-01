@@ -6,7 +6,6 @@
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
-  
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -19,7 +18,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.1",
-    "redis": "^5.1.1"
+    "redis": "^5.1.1",
     "serverless-http": "^3.0.1"
   }
 }
