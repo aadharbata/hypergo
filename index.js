@@ -12,6 +12,7 @@ app.use(express.json());
 app.use("/user", userRouter);
 app.use("/property", propertyRouter);
 
+
 mongoose.connect(process.env.MONGO_URI).then(() => {
   console.log("✅ Connected to MongoDB");
   app.listen(process.env.PORT || 3000, () => {
@@ -19,4 +20,7 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
   });
 }).catch((err) => {
   console.error("❌ MongoDB connection error:", err);
+});
+app.get("/", (req, res) => {
+  res.send("API is running!");
 });
